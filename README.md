@@ -2,7 +2,7 @@
 
 ## setup GKE
 
-···bash
+```bash
 cd terraform-standing-up-gke
 terraform init
 terraform apply

@@ -15,8 +15,11 @@ Note that you need to have google credential and projects ready.
 ```bash
 kubectl apply -f k8s-default/
 ```
+After this you can see that k8s secrets can be decoded by base64, configMap contains secrets and yaml files contains secrets.
 
 ## deploy vault
+
+Note that you should have helm3 installed.
 
 ```bash
 helm install vault hashicorp/vault --version 0.13.0 -f helm/vault-values.yaml
@@ -41,11 +44,7 @@ helm install nginx-ingress ingress-nginx/ingress-nginx
 
 ## Config Vault
 
-```bash
-helm install vault hashicorp/vault --version 0.13.0 -f helm/vault-values.yaml
-```
-
-### Setup k8s authmethod from the vault pod
+### Setup k8s authmethod from the vault pod, so that all k8s pods can authentiate with vault using their k8s token
 
 ```bash
 kubectl exec --stdin=true --tty=true vault-0 -- /bin/sh
@@ -61,7 +60,7 @@ vault write auth/kubernetes/config \
 ```
 
 
-### define a role for product-api pod, so it can read both static and dynamic secrets
+### define role and policy for product-api pod, so it can read both static and dynamic secrets
 
 ```bash
 vault policy write products-api - <<EOF
@@ -80,7 +79,7 @@ vault write auth/kubernetes/role/product-api \
     ttl=1h
 ```
 
-### define a role for postgres admin so he can save the initial postgres password
+### define role nd policy for postgres admin so he can save the initial postgres password
 
 ```bash
 vault policy write postgres - <<EOF
